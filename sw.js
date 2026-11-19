@@ -1,0 +1,5 @@
+const CACHE='pcc-direct-browser-v1';
+const ASSETS=['./index.html'];
+self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(ASSETS);await self.skipWaiting()})()));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith('pcc-direct-browser-')&&key!==CACHE)await caches.delete(key);await self.clients.claim()})()));
+self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;const url=new URL(event.request.url);if(url.origin!==self.location.origin||!url.href.startsWith(self.registration.scope))return;event.respondWith((async()=>{const cache=await caches.open(CACHE);const found=await cache.match(event.request);if(found)return found;if(event.request.mode==='navigate')return (await cache.match(new URL('./index.html',self.registration.scope).href))||fetch(event.request);return fetch(event.request)})())});
