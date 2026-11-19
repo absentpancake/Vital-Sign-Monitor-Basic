@@ -1,4 +1,4 @@
-const CACHE='pcc-direct-browser-v1';
+const CACHE='pcc-direct-browser-v4';
 const ASSETS=['./index.html'];
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(ASSETS);await self.skipWaiting()})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith('pcc-direct-browser-')&&key!==CACHE)await caches.delete(key);await self.clients.claim()})()));
